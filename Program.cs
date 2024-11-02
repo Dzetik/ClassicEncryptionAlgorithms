@@ -1,4 +1,7 @@
 ﻿using System;
+using System.IO;
+using System.Reflection;
+using System.Text;
 using static System.Collections.Specialized.BitVector32;
 
 namespace ClassicEncryptionAlgorithms
@@ -15,6 +18,9 @@ namespace ClassicEncryptionAlgorithms
 
             Console.WriteLine("\nВыберите действие:\n1. Шифрование\n2. Дешифрование\n");
             int action = getAction(); //1 = шифрование; 2 = дешифрование
+
+            Console.WriteLine("\nКак Вы хотите ввести текст?\n1. В консоль\n2. Через файл\n");
+            string text = getText();
 
         }
 
@@ -73,11 +79,55 @@ namespace ClassicEncryptionAlgorithms
 
             catch (Exception e)
             {
-                Console.Write("Не верный формат ввода. Введите число из преставленного списка. \n");
+                Console.Write("Не верный формат ввода. Введите число из преставленного списка.\n");
                 getAction();
             }
 
             return action;
+        }
+
+        public static string getText() // чтение исходного текста пользователя
+        {
+            string text = "";
+            int choose = 0;
+            try
+            {
+                choose = Convert.ToInt32(Console.ReadLine());
+                while (choose != 1 && choose != 2)
+                {
+                    Console.WriteLine("Метод с указанным номером не обнаружен. Выберите номер из списка.");
+                    choose = Convert.ToInt32(Console.ReadLine());
+                }
+            }
+
+            catch (Exception e)
+            {
+                Console.Write("Не верный формат ввода. Введите число из преставленного списка.\n");
+                getAction();
+            }
+
+            if (choose == 1)
+            {
+                Console.WriteLine("Вы выбрали ввод текста через консоль. Текст будет вводиться до нажатия на клавишу Enter.");
+                text = Console.ReadLine();
+                Console.WriteLine("\nИсходный текст из консоли:\n" + text);
+            }
+            else
+            {
+                Console.WriteLine("Вы выбрали ввод текста из файла. Введите путь к файлу.");
+                string pathToFile = Console.ReadLine();
+
+                while (!File.Exists(pathToFile))
+                {
+                    Console.WriteLine("Данный файл не существует по указанному пути. " +
+                        "Перепроверьте данные и попробуйте снова.");
+                    pathToFile = Console.ReadLine();
+                }
+                text = File.ReadAllText(pathToFile);
+                Console.WriteLine("\nИсходный текст из файла:\n" + text);
+            }
+
+            return text;
         }
 
 
