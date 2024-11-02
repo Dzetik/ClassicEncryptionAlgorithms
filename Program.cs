@@ -1,4 +1,7 @@
-﻿namespace ClassicEncryptionAlgorithms
+﻿using System;
+using static System.Collections.Specialized.BitVector32;
+
+namespace ClassicEncryptionAlgorithms
 {
     internal class Program
     {
@@ -10,10 +13,12 @@
             chooseMethod(methods); 
             string method = getAnswerOnChoose(methods);
 
-            Console.WriteLine(method);
+            Console.WriteLine("\nВыберите действие:\n1. Шифрование\n2. Дешифрование\n");
+            int action = getAction(); //1 = шифрование; 2 = дешифрование
+
         }
 
-        public static void chooseMethod(string[] methods) // вывод в консоль списка
+        public static void chooseMethod(string[] methods) // вывод в консоль списка методов
         {
             Console.WriteLine("Выберите метод: ");
             for (int i = 0; i < methods.Length; i++)
@@ -48,6 +53,33 @@
             return result;
         }
 
-       
+        public static int getAction() // запрос вида криптографического преобразования
+        {
+            int action = 0;
+            try
+            {
+                action = Convert.ToInt32(Console.ReadLine());
+                while (action != 1 && action != 2)
+                {
+                    Console.WriteLine("Действие с указанным номером не обнаружено. Выберите номер из списка.");
+                    action = Convert.ToInt32(Console.ReadLine());
+                }
+                if (action == 1)
+                {
+                    Console.WriteLine("Вы выбрали шифрование.");
+                }
+                else Console.WriteLine("Вы выбрали дешифрование.");
+            }
+
+            catch (Exception e)
+            {
+                Console.Write("Не верный формат ввода. Введите число из преставленного списка. \n");
+                getAction();
+            }
+
+            return action;
+        }
+
+
     }
 }
