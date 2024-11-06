@@ -3,6 +3,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using static System.Collections.Specialized.BitVector32;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ClassicEncryptionAlgorithms
 {
@@ -21,6 +22,12 @@ namespace ClassicEncryptionAlgorithms
 
             Console.WriteLine("\nКак Вы хотите ввести текст?\n1. В консоль\n2. Через файл\n");
             string text = getText();
+            text = "А мне ещё делать 6 методов шифрования";
+
+            string key = getKey();
+
+            string finalText = choosingSolutionMethod(method, action, key, text);
+            Console.WriteLine("\n" + finalText);
 
         }
 
@@ -86,6 +93,19 @@ namespace ClassicEncryptionAlgorithms
             return action;
         }
 
+        public static string getKey()
+        {
+            Console.WriteLine("\nВведите ключ:");
+            string key = Console.ReadLine();
+            while (key == "")
+            {
+                Console.WriteLine("Вы не ввели ключ. Попробуйте снова.");
+                key = Console.ReadLine();
+            }
+            Console.WriteLine("Введенный ключ: " + key);
+            return key;
+        }
+
         public static string getText() // чтение исходного текста пользователя
         {
             string text = "";
@@ -110,6 +130,11 @@ namespace ClassicEncryptionAlgorithms
             {
                 Console.WriteLine("Вы выбрали ввод текста через консоль. Текст будет вводиться до нажатия на клавишу Enter.");
                 text = Console.ReadLine();
+                while (text == "")
+                {
+                    Console.WriteLine("Вы не ввели текст. Попробуйте снова.");
+                    text = Console.ReadLine();
+                }
                 Console.WriteLine("\nИсходный текст из консоли:\n" + text);
             }
             else
@@ -130,6 +155,90 @@ namespace ClassicEncryptionAlgorithms
             return text;
         }
 
+        public static int getKeyForIntMetods(string strKey)
+        {
+            int key = 0;
+            try
+            {
+                key = Convert.ToInt32(strKey);
+                while (key < 2 || key > 8)
+                {
+                    Console.Write("Не верный ключ. Для данного метода введите целое число от 2 до 8.\n");
+                    key = Convert.ToInt32(getKey());
+                }
+            }
+            catch (Exception e)
+            {
+                getKeyForIntMetods("0");
+            }
+            return key;
+
+        }
+
+        public static string choosingSolutionMethod(string method, int action, string key, string text)
+        {
+            switch (method)
+            {
+                case "Метод перестановки символов":
+                    if (action == 1)
+                    {
+                        return charPermutationEncryption(text, key);
+                    }
+                    else 
+                    { 
+                        return charPermutationDecryption(text); 
+                    }
+               /* case "Метод гаммирования":
+                    if (action == 1)
+                    {
+
+                    }
+                    else { }
+                    break;
+                case "Метод Виженера":
+                    if (action == 1)
+                    {
+
+                    }
+                    else { }
+                    break;
+                case "Шифр Полибия":
+                    if (action == 1)
+                    {
+
+                    }
+                    else { }
+                    break;
+                case "Метод Playfair":
+                    if (action == 1)
+                    {
+
+                    }
+                    else { }
+                    break;
+                case "Метод аффинного шифра":
+                    if (action == 1)
+                    {
+
+                    }
+                    else { }
+                    break;*/
+            }
+            return "aaa";
+        }
+
+        public static string charPermutationEncryption(string text, string strKey)
+        {
+            getKeyForIntMetods(strKey);
+
+
+
+            return text;
+        }
+        public static string charPermutationDecryption(string text)
+        {
+            return text;
+        }
 
     }
 }
