@@ -2,6 +2,7 @@
 using System.IO;
 using System.Numerics;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using static System.Collections.Specialized.BitVector32;
 using static System.Net.Mime.MediaTypeNames;
@@ -23,12 +24,9 @@ namespace ClassicEncryptionAlgorithms
 
             Console.WriteLine("\nКак Вы хотите ввести текст?\n1. В консоль\n2. Через файл\n");
             string text = getText();
-            //text = "Метод перестановки";
-            //text = "Мдраке енитпсо.оетв."; //ключ 4 не раб
-            //text = "Мопеаведеснкт ртои"; //ключ 3 не раб
 
             string key = getKey();
-
+            
             string finalText = choosingSolutionMethod(method, action, key, text);
             Console.WriteLine("\n" + finalText);
 
@@ -192,14 +190,18 @@ namespace ClassicEncryptionAlgorithms
                     { 
                         return charPermutationDecryption(text, key); 
                     }
-               /* case "Метод гаммирования":
+               case "Метод гаммирования":
+                    Console.WriteLine("\nДанный метод распознает только русский алфавит, цифры и часть символов.");
+                    string alphabet = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя 123456789.,?;:!+-=*/()[]{}";
                     if (action == 1)
                     {
-
+                        return gammingMethodEncryption(text, strKey, alphabet);
                     }
-                    else { }
-                    break;
-                case "Метод Виженера":
+                    else 
+                    {
+                        return gammingMethodDecryption(text, strKey, alphabet);    
+                    }
+                /*case "Метод Виженера":
                     if (action == 1)
                     {
 
@@ -292,6 +294,81 @@ namespace ClassicEncryptionAlgorithms
                 for (int j = 0; j < key; j++)
                 {
                     decryptedText += charBlocks[j, i];
+                }
+            }
+
+            return decryptedText;
+        }
+
+        public static string gammingMethodEncryption(string text, string key, string alphabet)
+        {
+            string encryptedText = "";
+
+            while (key.Length < text.Length)
+            {
+                key += key;
+            }
+            key = key.Substring(0, text.Length);
+
+            for (int i = 0; i < text.Length; i++)
+            {
+                int charText = -1;
+                int charKey = -1;
+
+                for (int j = 0; j < alphabet.Length; j++)
+                {
+                    if (text[i] == alphabet[j]) 
+                    { 
+                        charText = j; 
+                    }
+                    if (key[i] == alphabet[j])
+                    {
+                        charKey = j;
+                    }
+                }
+
+                if (charText == -1 || charKey == -1) encryptedText += "?";
+                else
+                {
+                    encryptedText += alphabet[(charText + charKey) % alphabet.Length];
+                }
+
+            }
+
+            return encryptedText;
+        }
+
+        public static string gammingMethodDecryption(string text, string key, string alphabet)
+        {
+            string decryptedText = "";
+
+            while (key.Length < text.Length)
+            {
+                key += key;
+            }
+            key = key.Substring(0, text.Length);
+
+            for (int i = 0; i < text.Length; i++)
+            {
+                int charText = -1;
+                int charKey = -1;
+
+                for (int j = 0; j < alphabet.Length; j++)
+                {
+                    if (text[i] == alphabet[j])
+                    {
+                        charText = j;
+                    }
+                    if (key[i] == alphabet[j])
+                    {
+                        charKey = j;
+                    }
+                }
+
+                if (charText == -1 || charKey == -1) decryptedText += "?";
+                else
+                {
+                    decryptedText += alphabet[(charText - charKey + alphabet.Length) % alphabet.Length];
                 }
             }
 
