@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Numerics;
 using System.Reflection;
 using System.Text;
 using static System.Collections.Specialized.BitVector32;
@@ -22,7 +23,9 @@ namespace ClassicEncryptionAlgorithms
 
             Console.WriteLine("\nКак Вы хотите ввести текст?\n1. В консоль\n2. Через файл\n");
             string text = getText();
-            text = "А мне ещё делать 6 методов шифрования";
+            //text = "Метод перестановки";
+            //text = "Мдраке енитпсо.оетв."; //ключ 4 не раб
+            //text = "Мопеаведеснкт ртои"; //ключ 3 не раб
 
             string key = getKey();
 
@@ -175,18 +178,19 @@ namespace ClassicEncryptionAlgorithms
 
         }
 
-        public static string choosingSolutionMethod(string method, int action, string key, string text)
+        public static string choosingSolutionMethod(string method, int action, string strKey, string text)
         {
             switch (method)
             {
                 case "Метод перестановки символов":
+                    int key = getKeyForIntMetods(strKey);
                     if (action == 1)
                     {
                         return charPermutationEncryption(text, key);
                     }
                     else 
                     { 
-                        return charPermutationDecryption(text); 
+                        return charPermutationDecryption(text, key); 
                     }
                /* case "Метод гаммирования":
                     if (action == 1)
@@ -227,17 +231,71 @@ namespace ClassicEncryptionAlgorithms
             return "aaa";
         }
 
-        public static string charPermutationEncryption(string text, string strKey)
+        public static string charPermutationEncryption(string text, int key)
         {
-            getKeyForIntMetods(strKey);
+            int countNewSymbol = 0;
+            if (text.Length % key != 0) countNewSymbol = key - text.Length % key;
 
+            int count = 0;
+            while (count < countNewSymbol) // дозаполнение сообщения символами
+            {
+                text = text + ".";
+                count++;
+            }
 
+            string encryptedText = "";
+            int countBlocks = text.Length / key; 
+            char[] charText = text.ToCharArray();
 
-            return text;
+            //Array.Reverse(charText); // повышение уровня шифрования
+            
+            char[,] charBlocks = new char[countBlocks, key];
+            for (int i = 0; i < countBlocks; i++)
+            {
+                for (int j = 0; j < key; j++)
+                {
+                    charBlocks[i, j] = charText[j + i * key];
+                }
+            }
+
+            for (int j = 0; j < key; j++)
+            {
+                for (int i = 0; i < countBlocks; i++)
+                {
+                    encryptedText += charBlocks[i, j];
+                }
+            }
+
+            return encryptedText;
+
         }
-        public static string charPermutationDecryption(string text)
+
+        public static string charPermutationDecryption(string text, int key)
         {
-            return text;
+            string decryptedText = "";
+            int countBlocks = text.Length / key;
+            char[] charText = text.ToCharArray();
+
+            Console.WriteLine(text.Length + "/" + key + "=" + countBlocks);
+
+            char[,] charBlocks = new char[key, countBlocks];
+            for (int i = 0; i < key; i++)
+            {
+                for (int j = 0; j < countBlocks; j++)
+                {
+                    charBlocks[i, j] = charText[j + i * countBlocks];
+                }
+            }
+
+            for (int i = 0; i < countBlocks; i++)
+            {
+                for (int j = 0; j < key; j++)
+                {
+                    decryptedText += charBlocks[j, i];
+                }
+            }
+
+            return decryptedText;
         }
 
     }
