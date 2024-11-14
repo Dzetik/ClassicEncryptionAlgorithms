@@ -26,7 +26,7 @@ namespace ClassicEncryptionAlgorithms
             string text = getText();
 
             string key = getKey();
-            
+
             string finalText = choosingSolutionMethod(method, action, key, text);
             Console.WriteLine("\n" + finalText);
 
@@ -177,7 +177,10 @@ namespace ClassicEncryptionAlgorithms
         }
 
         public static string choosingSolutionMethod(string method, int action, string strKey, string text)
-        {
+        {   
+            string alphabet = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя 123456789.,?;:!+-=*/()[]{}";
+            //string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
             switch (method)
             {
                 case "Метод перестановки символов":
@@ -192,7 +195,6 @@ namespace ClassicEncryptionAlgorithms
                     }
                case "Метод гаммирования":
                     Console.WriteLine("\nДанный метод распознает только русский алфавит, цифры и часть символов.");
-                    string alphabet = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя 123456789.,?;:!+-=*/()[]{}";
                     if (action == 1)
                     {
                         return gammingMethodEncryption(text, strKey, alphabet);
@@ -201,14 +203,17 @@ namespace ClassicEncryptionAlgorithms
                     {
                         return gammingMethodDecryption(text, strKey, alphabet);    
                     }
-                /*case "Метод Виженера":
+                case "Метод Виженера":
+                    Console.WriteLine("\nДанный метод распознает только русский алфавит, цифры и часть символов.");
                     if (action == 1)
                     {
-
+                        return vigenerMethodEncryption(text, strKey, alphabet);
                     }
-                    else { }
-                    break;
-                case "Шифр Полибия":
+                    else 
+                    {
+                        return vigenerMethodDecryption(text, strKey, alphabet);
+                    }
+                /*case "Шифр Полибия":
                     if (action == 1)
                     {
 
@@ -370,6 +375,48 @@ namespace ClassicEncryptionAlgorithms
                 {
                     decryptedText += alphabet[(charText - charKey + alphabet.Length) % alphabet.Length];
                 }
+            }
+
+            return decryptedText;
+        }
+
+        public static string vigenerMethodEncryption(string text, string key, string alphabet)
+        {
+            string encryptedText = "";
+
+            while (key.Length < text.Length)
+            {
+                key += key;
+            }
+            key = key.Substring(0, text.Length);
+
+            for (int i = 0; i < text.Length; i++)
+            {
+                int charTextIndex = alphabet.IndexOf(text[i]);
+                int charKey = alphabet.IndexOf(key[i]);
+                int indexOfFinalChar = (alphabet.Length + charTextIndex + charKey) % alphabet.Length;
+                encryptedText += alphabet[indexOfFinalChar];
+            }
+
+            return encryptedText;
+        }
+
+        public static string vigenerMethodDecryption(string text, string key, string alphabet)
+        {
+            string decryptedText = "";
+
+            while (key.Length < text.Length)
+            {
+                key += key;
+            }
+            key = key.Substring(0, text.Length);
+
+            for (int i = 0; i < text.Length; i++)
+            {
+                int charTextIndex = alphabet.IndexOf(text[i]);
+                int charKey = alphabet.IndexOf(key[i]);
+                int indexOfFinalChar = (alphabet.Length + charTextIndex - charKey) % alphabet.Length;
+                decryptedText += alphabet[indexOfFinalChar];
             }
 
             return decryptedText;
