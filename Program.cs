@@ -213,14 +213,17 @@ namespace ClassicEncryptionAlgorithms
                     {
                         return vigenerMethodDecryption(text, strKey, alphabet);
                     }
-                /*case "Шифр Полибия":
+                case "Шифр Полибия":
+                    Console.WriteLine("\nДанный метод распознает только строчные русские буквы и часть символов.");
                     if (action == 1)
                     {
-
+                        return polybiusCipherEncryption(text);
                     }
-                    else { }
-                    break;
-                case "Метод Playfair":
+                    else 
+                    {
+                        return polybiusCipherDecryption(text);
+                    }
+                /*case "Метод Playfair":
                     if (action == 1)
                     {
 
@@ -417,6 +420,95 @@ namespace ClassicEncryptionAlgorithms
                 int charKey = alphabet.IndexOf(key[i]);
                 int indexOfFinalChar = (alphabet.Length + charTextIndex - charKey) % alphabet.Length;
                 decryptedText += alphabet[indexOfFinalChar];
+            }
+
+            return decryptedText;
+        }
+
+        public static string polybiusCipherEncryption(string text)
+        {
+            string alphabet = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя,. ";
+            string encryptedText = "";
+
+            int columnRows = Convert.ToInt32(Math.Sqrt(alphabet.Length));
+            char[,] alphabetArr = new char[columnRows, columnRows];
+
+            for (int i = 0; i < columnRows; i++)
+            {
+                for (int j = 0; j < columnRows; j++)
+                {
+
+                    alphabetArr[i, j] = alphabet[j];
+                }
+                alphabet = alphabet.Remove(0, columnRows);
+            }
+
+            for (int k = 0; k < text.Length; k++)
+            {
+                char encryptedChar = '?';
+                for (int i = 0; i < columnRows; i++)
+                {
+                    for (int j = 0; j < columnRows; j++)
+                    {
+                        if (text[k] == alphabetArr[i, j])
+                        {
+                            if (i-1 >= 0)
+                            {
+                                encryptedChar = alphabetArr[i-1, j];
+                            }
+                            else
+                            {
+                                encryptedChar = alphabetArr[columnRows-1, j];
+                            }
+                        }
+                    }
+                }
+                encryptedText += encryptedChar;
+            }
+
+            return encryptedText;
+        }
+
+        public static string polybiusCipherDecryption(string text)
+        {
+            string alphabet = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя,. ";
+            string decryptedText = "";
+
+            int columnRows = Convert.ToInt32(Math.Sqrt(alphabet.Length));
+            char[,] alphabetArr = new char[columnRows, columnRows];
+
+            for (int i = 0; i < columnRows; i++)
+            {
+                for (int j = 0; j < columnRows; j++)
+                {
+
+                    alphabetArr[i, j] = alphabet[j];
+                }
+                alphabet = alphabet.Remove(0, columnRows);
+            }
+
+            
+            for (int k = 0; k < text.Length; k++)
+            {
+                char decryptedChar = '?';
+                for (int i = 0; i < columnRows; i++)
+                {
+                    for (int j = 0; j < columnRows; j++)
+                    {
+                        if (text[k] == alphabetArr[i, j])
+                        {
+                            if (i+1 < columnRows)
+                            {
+                                decryptedChar = alphabetArr[i+1, j];
+                            }
+                            else
+                            {
+                                decryptedChar = alphabetArr[0, j];
+                            }
+                        }
+                    }
+                }
+                decryptedText += decryptedChar;
             }
 
             return decryptedText;
