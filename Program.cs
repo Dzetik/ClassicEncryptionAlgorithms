@@ -223,14 +223,17 @@ namespace ClassicEncryptionAlgorithms
                     {
                         return polybiusCipherDecryption(text);
                     }
-                /*case "Метод Playfair":
+                case "Метод Playfair":
+                    Console.WriteLine("\nДанный метод и его ключ распознают только английские буквы.");
                     if (action == 1)
                     {
-
+                        return PlayfairMethodEncryption(text, strKey);
                     }
-                    else { }
-                    break;
-                case "Метод аффинного шифра":
+                    else 
+                    { 
+                        return PlayfairMethodDecryption(text, strKey);
+                    }
+                /*case "Метод аффинного шифра":
                     if (action == 1)
                     {
 
@@ -514,5 +517,174 @@ namespace ClassicEncryptionAlgorithms
             return decryptedText;
         }
 
+        public static string PlayfairMethodEncryption(string text, string key)
+        {
+            key = key.ToUpper().Replace("J", "I");
+            HashSet<char> seen = new HashSet<char>();
+            string preparedKey = "";
+
+            foreach (char c in key)
+            {
+                if (char.IsLetter(c) && !seen.Contains(c))
+                {
+                    seen.Add(c);
+                    preparedKey += c;
+                }
+            }
+
+            // Создание таблицы
+            char[,] table = new char[5, 5];
+            int index = 0;
+
+            foreach (char c in preparedKey)
+            {
+                table[index / 5, index % 5] = c;
+                index++;
+            }
+
+            for (char c = 'A'; c <= 'Z'; c++)
+            {
+                if (c == 'J') continue; // Пропуск 'J'
+                if (!seen.Contains(c))
+                {
+                    seen.Add(c);
+                    table[index / 5, index % 5] = c;
+                    index++;
+                }
+            }
+
+            // Подготовка текста
+            text = text.ToUpper().Replace(" ", "").Replace("J", "I");
+            string preparedText = "";
+
+            for (int i = 0; i < text.Length; i++)
+            {
+                preparedText += text[i];
+                if (i + 1 < text.Length && text[i] == text[i + 1])
+                {
+                    preparedText += 'X'; // 'X' между одинаковыми буквами
+                }
+            }
+
+            if (preparedText.Length % 2 != 0)
+            {
+                preparedText += 'X'; // 'X' в конце, если длина нечетная
+            }
+
+            // Шифрование
+            string result = "";
+            for (int i = 0; i < preparedText.Length; i += 2)
+            {
+                char a = preparedText[i];
+                char b = preparedText[i + 1];
+
+                int[] posA = FindPosition(a, table);
+                int[] posB = FindPosition(b, table);
+
+                if (posA[0] == posB[0]) // В одной строке
+                {
+                    result += table[posA[0], (posA[1] + 1) % 5];
+                    result += table[posB[0], (posB[1] + 1) % 5];
+                }
+                else if (posA[1] == posB[1]) // В одном столбце
+                {
+                    result += table[(posA[0] + 1) % 5, posA[1]];
+                    result += table[(posB[0] + 1) % 5, posB[1]];
+                }
+                else // В разных строках и столбцах
+                {
+                    result += table[posA[0], posB[1]];
+                    result += table[posB[0], posA[1]];
+                }
+            }
+            return result;
+        }
+
+        static int[] FindPosition(char c, char[,] table)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                for (int j = 0; j < 5; j++)
+                {
+                    if (table[i, j] == c)
+                    {
+                        return new int[] { i, j };
+                    }
+                }
+            }
+            return new int[] { 0, 0 };
+        }
+
+        public static string PlayfairMethodDecryption(string text, string key)
+        {
+            key = key.ToUpper().Replace("J", "I");
+            HashSet<char> seen = new HashSet<char>();
+            string preparedKey = "";
+
+            foreach (char c in key)
+            {
+                if (char.IsLetter(c) && !seen.Contains(c))
+                {
+                    seen.Add(c);
+                    preparedKey += c;
+                }
+            }
+
+            // Создание таблицы
+            char[,] table = new char[5, 5];
+            int index = 0;
+
+            foreach (char c in preparedKey)
+            {
+                table[index / 5, index % 5] = c;
+                index++;
+            }
+
+            for (char c = 'A'; c <= 'Z'; c++)
+            {
+                if (c == 'J') continue; // Пропуск 'J'
+                if (!seen.Contains(c))
+                {
+                    seen.Add(c);
+                    table[index / 5, index % 5] = c;
+                    index++;
+                }
+            }
+
+            // Подготовка текста
+            text = text.ToUpper().Replace(" ", "").Replace("J", "I");
+            string preparedText = text;
+
+            // Дешифрование
+            string result = "";
+            for (int i = 0; i < preparedText.Length; i += 2)
+            {
+                char a = preparedText[i];
+                char b = preparedText[i + 1];
+
+                int[] posA = FindPosition(a, table);
+                int[] posB = FindPosition(b, table);
+
+                if (posA[0] == posB[0]) // В одной строке
+                {
+                    result += table[posA[0], (posA[1] + 4) % 5]; // Сдвиг влево
+                    result += table[posB[0], (posB[1] + 4) % 5]; // Сдвиг влево
+                }
+                else if (posA[1] == posB[1]) // В одном столбце
+                {
+                    result += table[(posA[0] + 4) % 5, posA[1]]; // Сдвиг вверх
+                    result += table[(posB[0] + 4) % 5, posB[1]]; // Сдвиг вверх
+                }
+                else // В разных строках и столбцах
+                {
+                    result += table[posA[0], posB[1]];
+                    result += table[posB[0], posA[1]];
+                }
+            }
+            return result;
+        }
+    
+    
+    
     }
 }
