@@ -177,14 +177,15 @@ namespace ClassicEncryptionAlgorithms
         }
 
         public static string choosingSolutionMethod(string method, int action, string strKey, string text)
-        {   
-            string alphabet = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя 123456789.,?;:!+-=*/()[]{}";
+        {
+            //абвгдеёжзийклмнопрстуфхцчшщъыьэюя 123456789.,?;:!+-= */ ()[]{ }
+            string alphabet = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя 123456789.,?;:!+-= */ ()[]{ }";
             //string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            int key = getKeyForIntMetods(strKey);
 
             switch (method)
-            {
+            {              
                 case "Метод перестановки символов":
-                    int key = getKeyForIntMetods(strKey);
                     if (action == 1)
                     {
                         return charPermutationEncryption(text, key);
@@ -233,15 +234,19 @@ namespace ClassicEncryptionAlgorithms
                     { 
                         return PlayfairMethodDecryption(text, strKey);
                     }
-                /*case "Метод аффинного шифра":
+                case "Метод аффинного шифра":
+                    Console.WriteLine("\nДанный метод распознает только русский алфавит, цифры и часть символов.");
                     if (action == 1)
                     {
-
+                        return affineCipherEncryption(text, key, alphabet);
                     }
-                    else { }
-                    break;*/
+                    else 
+                    {
+                        return affineCipherDecryption(text, key, alphabet);
+                    }
+                default:
+                    return "Метод не обнаружен.";
             }
-            return "aaa";
         }
 
         public static string charPermutationEncryption(string text, int key)
@@ -572,7 +577,7 @@ namespace ClassicEncryptionAlgorithms
             }
 
             // Шифрование
-            string result = "";
+            string encryptedText = "";
             for (int i = 0; i < preparedText.Length; i += 2)
             {
                 char a = preparedText[i];
@@ -583,21 +588,21 @@ namespace ClassicEncryptionAlgorithms
 
                 if (posA[0] == posB[0]) // В одной строке
                 {
-                    result += table[posA[0], (posA[1] + 1) % 5];
-                    result += table[posB[0], (posB[1] + 1) % 5];
+                    encryptedText += table[posA[0], (posA[1] + 1) % 5];
+                    encryptedText += table[posB[0], (posB[1] + 1) % 5];
                 }
                 else if (posA[1] == posB[1]) // В одном столбце
                 {
-                    result += table[(posA[0] + 1) % 5, posA[1]];
-                    result += table[(posB[0] + 1) % 5, posB[1]];
+                    encryptedText += table[(posA[0] + 1) % 5, posA[1]];
+                    encryptedText += table[(posB[0] + 1) % 5, posB[1]];
                 }
                 else // В разных строках и столбцах
                 {
-                    result += table[posA[0], posB[1]];
-                    result += table[posB[0], posA[1]];
+                    encryptedText += table[posA[0], posB[1]];
+                    encryptedText += table[posB[0], posA[1]];
                 }
             }
-            return result;
+            return encryptedText;
         }
 
         static int[] FindPosition(char c, char[,] table)
@@ -683,8 +688,61 @@ namespace ClassicEncryptionAlgorithms
             }
             return result;
         }
-    
-    
-    
+
+        public static string affineCipherEncryption(string text, int key, string alphabet)
+        {
+            Console.WriteLine("\nВведите второй ключ.");
+            int secondKey = getKeyForIntMetods(getKey());
+
+            string encryptedText = "";
+            int indexOfFinalChar = 0;
+
+            for (int i = 0; i < text.Length; i++)
+            {
+                for (int j = 0; j < alphabet.Length; j++)
+                {
+                    if (text[i] == alphabet[j])
+                    {
+                        indexOfFinalChar = (key * j + secondKey) % alphabet.Length;
+                        encryptedText += alphabet[indexOfFinalChar];
+                        break;
+                    }                    
+                }
+            }
+            return encryptedText;
+        }
+
+        public static string affineCipherDecryption(string text, int key, string alphabet)
+        {
+            Console.WriteLine("\nВведите второй ключ.");
+            int secondKey = getKeyForIntMetods(getKey());
+
+            int multiplicative = 0;
+            for (int x = 1; x < alphabet.Length; x++)
+            {
+                if ((key % alphabet.Length * x) % alphabet.Length == 1)
+                {
+                    multiplicative = x;
+                }
+            }
+
+            string decryptedText = "";
+            int indexOfFinalChar = 0;
+
+            for (int i = 0; i < text.Length; i++)
+            {
+                for (int j = 0; j < alphabet.Length; j++)
+                {
+                    if (text[i] == alphabet[j])
+                    {
+                        indexOfFinalChar = multiplicative * (j - secondKey + alphabet.Length) % alphabet.Length;
+                        decryptedText += alphabet[indexOfFinalChar];
+                        break;
+                    }
+                }
+            }
+            return decryptedText;
+        }
+
     }
 }
