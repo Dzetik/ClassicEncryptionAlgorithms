@@ -28,7 +28,9 @@ namespace ClassicEncryptionAlgorithms
             string key = getKey();
 
             string finalText = choosingSolutionMethod(method, action, key, text);
-            Console.WriteLine("\n" + finalText);
+
+            Console.WriteLine("\nТекст был зашифрован. Куда его вывести?\n1. В консоль\n2. В файл\n");
+            textOutput(finalText);
 
         }
 
@@ -154,6 +156,46 @@ namespace ClassicEncryptionAlgorithms
             }
 
             return text;
+        }
+
+        public static void textOutput(string finalText)
+        {
+            int choose = 0;
+            try
+            {
+                choose = Convert.ToInt32(Console.ReadLine());
+                while (choose != 1 && choose != 2)
+                {
+                    Console.WriteLine("Метод с указанным номером не обнаружен. Выберите номер из списка.");
+                    choose = Convert.ToInt32(Console.ReadLine());
+                }
+            }
+
+            catch (Exception e)
+            {
+                Console.Write("Не верный формат ввода. Введите число из преставленного списка.\n");
+                textOutput(finalText);
+            }
+
+            if (choose == 1)
+            {
+                Console.WriteLine("Вы выбрали вывод текста в консоль.\nЗашифрованный текст:\n" + finalText);
+            }
+            else
+            {
+                Console.WriteLine("Вы выбрали вывод текста в файла. Введите путь к файлу.");
+                string pathToFile = Console.ReadLine();
+
+                while (!File.Exists(pathToFile))
+                {
+                    Console.WriteLine("Данный файл не существует по указанному пути. " +
+                        "Перепроверьте данные и попробуйте снова.");
+                    pathToFile = Console.ReadLine();
+                }
+
+                File.AppendAllText(pathToFile, finalText);
+                Console.WriteLine("\nЗашифрованный текст был добавлен в конец файла.");
+            }
         }
 
         public static int getKeyForIntMetods(string strKey)
