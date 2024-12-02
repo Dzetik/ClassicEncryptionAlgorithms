@@ -34,7 +34,10 @@ namespace ClassicEncryptionAlgorithms
 
         }
 
-        public static void chooseMethod(string[] methods) // вывод в консоль списка методов
+        /// <summary>
+        /// Вывод в консоль списка методов
+        /// </summary>
+        public static void chooseMethod(string[] methods)
         {
             Console.WriteLine("Выберите метод: ");
             for (int i = 0; i < methods.Length; i++)
@@ -44,7 +47,10 @@ namespace ClassicEncryptionAlgorithms
             Console.WriteLine(" ");
         }
 
-        public static string getAnswerOnChoose(string[] methods) // выбор метода из списка
+        /// <summary>
+        /// Выбор метода пользователем из представленного списка
+        /// </summary>
+        public static string getAnswerOnChoose(string[] methods)
         {
             string result = "";
             try
@@ -69,7 +75,10 @@ namespace ClassicEncryptionAlgorithms
             return result;
         }
 
-        public static int getAction() // запрос вида криптографического преобразования
+        /// <summary>
+        /// Запрос вида криптографического преобразования
+        /// </summary>
+        public static int getAction()
         {
             int action = 0;
             try
@@ -96,6 +105,9 @@ namespace ClassicEncryptionAlgorithms
             return action;
         }
 
+        /// <summary>
+        /// Запрос ключа шифрования
+        /// </summary>
         public static string getKey()
         {
             Console.WriteLine("\nВведите ключ:");
@@ -109,7 +121,10 @@ namespace ClassicEncryptionAlgorithms
             return key;
         }
 
-        public static string getText() // чтение исходного текста пользователя
+        /// <summary>
+        /// Чтение исходного текста из консоли/файла
+        /// </summary>
+        public static string getText()
         {
             string text = "";
             int choose = 0;
@@ -158,6 +173,9 @@ namespace ClassicEncryptionAlgorithms
             return text;
         }
 
+        /// <summary>
+        /// Вывод обработанного текста в консоль/файл
+        /// </summary>
         public static void textOutput(string finalText)
         {
             int choose = 0;
@@ -198,6 +216,9 @@ namespace ClassicEncryptionAlgorithms
             }
         }
 
+        /// <summary>
+        /// Преобразование ключа в число
+        /// </summary>
         public static int getKeyForIntMetods(string strKey)
         {
             int key = 0;
@@ -218,10 +239,13 @@ namespace ClassicEncryptionAlgorithms
 
         }
 
+        /// <summary>
+        /// Запуск метода криптографического преобразования исходя из введенных пользователем данных
+        /// </summary>
         public static string choosingSolutionMethod(string method, int action, string strKey, string text)
         {
             //абвгдеёжзийклмнопрстуфхцчшщъыьэюя 123456789.,?;:!+-= */ ()[]{ }
-            string alphabet = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя 123456789.,?;:!+-= */ ()[]{ }";
+            string alphabet = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя 123456789.,?;:!+-=*/()[]{}";
             //string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
             int key = getKeyForIntMetods(strKey);
 
@@ -267,7 +291,7 @@ namespace ClassicEncryptionAlgorithms
                         return polybiusCipherDecryption(text);
                     }
                 case "Метод Playfair":
-                    Console.WriteLine("\nДанный метод и его ключ распознают только английские буквы.");
+                    Console.WriteLine("\nДанный метод распознает только английские буквы.");
                     if (action == 1)
                     {
                         return PlayfairMethodEncryption(text, strKey);
@@ -291,6 +315,9 @@ namespace ClassicEncryptionAlgorithms
             }
         }
 
+        /// <summary>
+        /// Шифрование методом перестановки символов
+        /// </summary>
         public static string charPermutationEncryption(string text, int key)
         {
             int countNewSymbol = 0;
@@ -330,6 +357,9 @@ namespace ClassicEncryptionAlgorithms
 
         }
 
+        /// <summary>
+        /// Дешифрование методом перестановки символов
+        /// </summary>
         public static string charPermutationDecryption(string text, int key)
         {
             string decryptedText = "";
@@ -358,6 +388,9 @@ namespace ClassicEncryptionAlgorithms
             return decryptedText;
         }
 
+        /// <summary>
+        /// Шифрование методом гаммирования
+        /// </summary>
         public static string gammingMethodEncryption(string text, string key, string alphabet)
         {
             string encryptedText = "";
@@ -396,6 +429,9 @@ namespace ClassicEncryptionAlgorithms
             return encryptedText;
         }
 
+        /// <summary>
+        /// Дешифрование методом гаммирования
+        /// </summary>
         public static string gammingMethodDecryption(string text, string key, string alphabet)
         {
             string decryptedText = "";
@@ -433,6 +469,9 @@ namespace ClassicEncryptionAlgorithms
             return decryptedText;
         }
 
+        /// <summary>
+        /// Шифрование методом Виженера
+        /// </summary>
         public static string vigenerMethodEncryption(string text, string key, string alphabet)
         {
             string encryptedText = "";
@@ -454,6 +493,9 @@ namespace ClassicEncryptionAlgorithms
             return encryptedText;
         }
 
+        /// <summary>
+        /// Дешифрование методом Виженера
+        /// </summary>
         public static string vigenerMethodDecryption(string text, string key, string alphabet)
         {
             string decryptedText = "";
@@ -475,6 +517,9 @@ namespace ClassicEncryptionAlgorithms
             return decryptedText;
         }
 
+        /// <summary>
+        /// Шифрование шифром Полибия
+        /// </summary>
         public static string polybiusCipherEncryption(string text)
         {
             string alphabet = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя,. ";
@@ -519,6 +564,9 @@ namespace ClassicEncryptionAlgorithms
             return encryptedText;
         }
 
+        /// <summary>
+        /// Дешифрование шифром Полибия
+        /// </summary>
         public static string polybiusCipherDecryption(string text)
         {
             string alphabet = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя,. ";
@@ -564,6 +612,9 @@ namespace ClassicEncryptionAlgorithms
             return decryptedText;
         }
 
+        /// <summary>
+        /// Шифрование шифром Playfair
+        /// </summary>
         public static string PlayfairMethodEncryption(string text, string key)
         {
             key = key.ToUpper().Replace("J", "I");
@@ -647,21 +698,9 @@ namespace ClassicEncryptionAlgorithms
             return encryptedText;
         }
 
-        static int[] FindPosition(char c, char[,] table)
-        {
-            for (int i = 0; i < 5; i++)
-            {
-                for (int j = 0; j < 5; j++)
-                {
-                    if (table[i, j] == c)
-                    {
-                        return new int[] { i, j };
-                    }
-                }
-            }
-            return new int[] { 0, 0 };
-        }
-
+        /// <summary>
+        /// Дешифрование шифром Playfair
+        /// </summary>
         public static string PlayfairMethodDecryption(string text, string key)
         {
             key = key.ToUpper().Replace("J", "I");
@@ -731,6 +770,27 @@ namespace ClassicEncryptionAlgorithms
             return result;
         }
 
+        /// <summary>
+        /// Вспомогательный метод шифра Playfair для поиска по таблице
+        /// </summary
+        public static int[] FindPosition(char c, char[,] table)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                for (int j = 0; j < 5; j++)
+                {
+                    if (table[i, j] == c)
+                    {
+                        return new int[] { i, j };
+                    }
+                }
+            }
+            return new int[] { 0, 0 };
+        }
+
+        /// <summary>
+        /// Шифрование методом аффинного шифра
+        /// </summary>
         public static string affineCipherEncryption(string text, int key, string alphabet)
         {
             Console.WriteLine("\nВведите второй ключ.");
@@ -754,6 +814,9 @@ namespace ClassicEncryptionAlgorithms
             return encryptedText;
         }
 
+        /// <summary>
+        /// Дешифрование методом аффинного шифра
+        /// </summary>
         public static string affineCipherDecryption(string text, int key, string alphabet)
         {
             Console.WriteLine("\nВведите второй ключ.");
@@ -762,17 +825,23 @@ namespace ClassicEncryptionAlgorithms
             int multiplicative = 0;
             for (int x = 1; x < alphabet.Length; x++)
             {
-                if ((key % alphabet.Length * x) % alphabet.Length == 1)
+                if ((key * x) % alphabet.Length == 1)
                 {
                     multiplicative = x;
+                    break;
                 }
             }
 
+            if (multiplicative == 0)
+            {
+                Console.WriteLine("Мультипликативный ключ не найден.");
+            }
+
             string decryptedText = "";
-            int indexOfFinalChar = 0;
 
             for (int i = 0; i < text.Length; i++)
             {
+                int indexOfFinalChar = -1;
                 for (int j = 0; j < alphabet.Length; j++)
                 {
                     if (text[i] == alphabet[j])
@@ -781,6 +850,10 @@ namespace ClassicEncryptionAlgorithms
                         decryptedText += alphabet[indexOfFinalChar];
                         break;
                     }
+                }
+                if (indexOfFinalChar == -1)
+                {
+                    decryptedText += text[i];
                 }
             }
             return decryptedText;
